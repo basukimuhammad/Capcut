@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GenCap API — Dokumentasi</title>
+<style>
+:root{--bg:#07070c;--bg2:#0c0c14;--card:#101019;--border:transparent;--text:#f4f4f5;--muted:#9a9aa8;--p1:#a78bfa;--p2:#f472b6;--p3:#fb923c;--grad:;}
+*{box-sizing:border-box}
+body{margin:0;background:#0000ff;color:#000;font-family:"IBM Plex Mono",monospace;font-weight:700;line-height:1.4line-height:1.6}
+a{color:var(--p1);text-decoration:none}
+.wrap{max-width:820px;margin:0 auto;padding:40px 24px 90px}
+.nav{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:transparent;}
+.logo{font-weight:700;font-size:1.1rem;font-family:'Space Grotesk',sans-serif}
+.logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav a.link{padding:6px 12px;border:var(--border);border-radius:0;color:var(--muted);font-size:.85rem}
+.nav a.link:hover{color:#fff;border-color:transparent}
+h1{font-size:clamp(1.8rem,4.5vw,2.6rem);margin:30px 0 6px;font-family:'Space Grotesk',sans-serif}
+h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin-bottom:26px}
+.kicker{display:inline-flex;gap:10px;align-items:center;font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--p1);font-weight:600}
+.block{background:;border:var(--border);border-radius:0;padding:22px;margin:18px 0}
+.block h3{margin:0 0 10px;font-family:'Space Grotesk',sans-serif}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;background:transparent}
+pre{background:#0a0a12;border:var(--border);border-radius:0;padding:16px;overflow-x:auto;font-size:.82rem;line-height:1.55}
+code{font-family:'JetBrains Mono',Consolas,monospace}
+span.m{color:#fdba74}
+span.k{color:#a78bfa}
+span.s{color:#6ee7b7}
+.tag{display:inline-block;padding:3px 10px;border-radius:0;font-size:.72rem;font-weight:700;font-family:'Space Grotesk',monospace;margin-right:8px}
+.tag.get{background:transparent;color:#6ee7b7}
+.tag.post{background:transparent;color:#fdba74}
+.ep{display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',monospace;font-size:.9rem}
+.ep code{color:#fff}
+.path{color:#93c5fd}
+.note{border-left:3px solid var(--p2);padding:10px 14px;margin:14px 0;background:transparent;border-radius:0;color:var(--muted);font-size:.88rem}
+@media(max-width:560px){.wrap{padding:24px 16px 70px}}
+</style>
+</head>
+<body>
+<div class="nav"><span class="logo">Gen<b>Cap</b> <span style="color:var(--muted);font-weight:400;font-size:.85rem">/ API Docs</span></span><a class="link" href="/">KEMBALI KE WEB</a></div>
+<div class="wrap">
+  <span class="kicker">PUBLIC API</span>
+  <h1>Dokumentasi <span class="g">API GenCap</span></h1>
+  <p class="sub">Automasi render video template CapCut. Akses API dengan kunci (unlimited) atau tanpa kunci (limit global 6 req/menit untuk GET).</p>
+
+  <div class="block">
+    <h3>Dasar URL</h3>
+    <p style="color:var(--muted);margin:4px 0 12px">Semua endpoint dimulai dari</p>
+    <pre><code><span class="s">https://cc.septia.eu.cc</span>/v1/...</code></pre>
+  </div>
+
+  <div class="block">
+    <h3>Autentikasi — API Key</h3>
+    <p style="color:var(--muted);margin:4px 0">Kirim header <code>x-api-key</code> (atau query <code>?api_key=</code>). Dengan key: <b style="color:#6ee7b7">unlimited</b>. Tanpa key: GET dibatasi <b style="color:#fdba74">6 request/menit</b> (dipakai bersama semua pengguna), dan generate <b style="color:#fdba74">2 request/menit</b> global (juga dipakai bareng).</p>
+    <pre><code><span class="k">x-api-key:</span> gc_xxxxxxxxxxxxxxxxxxxx</code></pre>
+    <div class="note">Belum punya key? Hubungi owner — buat di halaman admin <a href="/admin">/admin</a>.</div>
+  </div>
+
+  <div class="block">
+    <h3>Endpoint</h3>
+    <div style="display:flex;flex-direction:column;gap:16px;margin-top:12px">
+      <div>
+        <p class="ep"><span class="tag get">GET</span><code class="path">/v1/templates</code></p>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 8px">Daftar semua template yang tersedia (termasuk jumlah foto yang dibutuhkan).</p>
+        <pre><code><span class="m"># contoh</span>
+<span class="k">curl</span> https://cc.septia.eu.cc/v1/templates \
+  -H <span class="s">"x-api-key: gc_..."</span></code></pre>
+      </div>
+      <div>
+        <p class="ep"><span class="tag get">GET</span><code class="path">/v1/templates/:id/info</code></p>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 8px">Info detail template: cover, author, statistik, dan URL video contoh.</p>
+      </div>
+      <div>
+        <p class="ep"><span class="tag get">GET</span><code class="path">/v1/tasks/:id</code></p>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 8px">Cek status task render (<code>queued</code> / <code>processing</code> / <code>completed</code> / <code>failed</code>) + tautan video hasil.</p>
+      </div>
+      <div>
+        <p class="ep"><span class="tag post">POST</span><code class="path">/v1/tasks</code></p>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 8px"><b style="color:#fdba74">Wajib API key</b> untuk unlimited. Tanpa key tetap boleh, tapi dibatasi <b style="color:#fdba74">2 generate/menit</b> global (dipakai bareng semua pengguna). Multipart form-data:</p>
+        <pre><code><span class="k">curl</span> -X POST https://cc.septia.eu.cc/v1/tasks \
+  -H <span class="s">"x-api-key: gc_..."</span> \
+  -F <span class="s">template_id=7405909526802615570</span> \
+  -F <span class="s">images=@foto1.jpg</span> \
+  -F <span class="s">images=@foto2.jpg</span> \
+  -F <span class="s">images=@foto3.jpg</span></code></pre>
+        <p style="color:var(--muted);font-size:.9rem;margin:6px 0 0">Balasan <code>201</code> berisi <code>task.id</code>; gunakan id itu untuk polling <code>GET /v1/tasks/:id</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Limit & Kebijakan</h3>
+    <table>
+      <tr><th>Konteks</th><th>Limit</th></tr>
+      <tr><td>GET tanpa API key</td><td><b style="color:#fdba74">6 request/menit</b> — dihitung global (dipakai bareng semua user)</td></tr>
+      <tr><td>GET/POST dengan API key</td><td><b style="color:#6ee7b7">Unlimited</b></td></tr>
+      <tr><td>POST tanpa API key</td><td><b style="color:#fdba74">2 generate/menit</b> — dihitung global (dipakai bareng semua user)</td></tr>
+    </table>
+    <p style="color:var(--muted);font-size:.84rem;margin-top:12px">Jika limit tercapai server membalas <code>429</code> dengan header <code>Retry-After</code> (detik). Response error selalu berbentuk <code>{"error": "..."}</code>.</p>
+  </div>
+
+  <div class="block">
+    <h3>Contoh JavaScript</h3>
+    <pre><code><span class="m">// fetch semua template</span>
+<span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'https://cc.septia.eu.cc/v1/templates'</span>, {
+  headers: { <span class="s">'x-api-key'</span>: <span class="s">'gc_...'</span> }
+});
+<span class="k">const</span> data = <span class="k">await</span> res.json();
+console.log(data.templates);</code></pre>
+  </div>
+
+  <p style="color:#6b6b78;font-size:.82rem;text-align:center;margin-top:34px">GenCap API · © <span id="yr"></span></p>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

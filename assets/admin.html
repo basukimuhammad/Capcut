@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GenCap — Admin Owner</title>
+<style>
+:root{--bg:#07070c;--card:#101019;--border:rgba(255,255,255,.09);--text:#f4f4f5;--muted:#9a9aa8;--p1:#a78bfa;--p2:#f472b6;--grad:linear-gradient(135deg,#7c3aed,#ec4899 55%,#f97316);}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif}
+a{color:var(--p1);text-decoration:none}
+.wrap{max-width:860px;margin:0 auto;padding:30px 20px 70px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:rgba(7,7,12,.85);backdrop-filter:blur(12px)}
+.logo{font-weight:700;font-family:'Space Grotesk',sans-serif}
+.logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.muted{color:var(--muted)}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--border);border-radius:18px;padding:22px;margin-top:20px}
+.card h2{margin:0 0 14px;font-family:'Space Grotesk',sans-serif;font-size:1.15rem}
+input[type=text],input[type=password]{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:#0a0a12;color:var(--text);font-size:.95rem;margin:6px 0}
+input:focus{outline:none;border-color:var(--p1)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;border:1px solid transparent;cursor:pointer;font-weight:600;font-size:.9rem;transition:.2s}
+.btn-p{background:var(--grad);color:#fff}
+.btn-p:hover{filter:brightness(1.1)}
+.btn-g{background:rgba(255,255,255,.06);border-color:var(--border);color:var(--text)}
+.btn-g:hover{background:rgba(255,255,255,.1)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--border);vertical-align:middle}
+th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;background:rgba(255,255,255,.03)}
+.key{font-family:'JetBrains Mono',Consolas,monospace;font-size:.8rem;color:#93c5fd;word-break:break-all}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.7rem;font-weight:700}
+.b20{}.badge-ok{background:rgba(52,211,153,.14);color:#6ee7b7}.badge-off{background:rgba(248,113,113,.14);color:#fca5a5}
+.hidden{display:none}
+.msg{padding:10px 14px;border-radius:10px;margin-top:12px;font-size:.88rem}
+.msg-ok{background:rgba(52,211,153,.1);color:#6ee7b7}.msg-err{background:rgba(248,113,113,.1);color:#fca5a5}
+.newkey{background:#0a0a12;border:1px dashed rgba(167,139,250,.5);border-radius:12px;padding:12px;margin-top:12px;font-family:monospace;color:#fff;font-size:.9rem;word-break:break-all}
+.ghost{opacity:.5}
+footer{margin-top:30px;text-align:center;color:#6b6b78;font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="nav">
+  <span class="logo">Gen<b>Cap</b> <span class="muted" style="font-weight:400;font-size:.85rem">/ Admin Owner</span></span>
+  <div style="display:flex;gap:10px;align-items:center">
+    <a class="muted" style="font-size:.85rem" href="/docs">API Docs</a>
+    <a class="muted" style="font-size:.85rem" href="/">Web</a>
+    <button class="btn btn-g" id="btnLogout" style="display:none">Logout</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="loginCard" class="card hidden">
+    <h2>Login Owner</h2>
+    <input type="password" id="pass" placeholder="Password owner" autocomplete="current-password" />
+    <div class="row"><button class="btn btn-p" id="btnLogin">Masuk</button></div>
+    <div id="loginMsg" class="msg hidden"></div>
+  </div>
+
+  <div id="panel" class="hidden">
+    <div class="card">
+      <h2>Buat API Key Baru</h2>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <input type="text" id="nkName" placeholder="Nama (contoh: Klien A)" style="flex:1;min-width:180px" />
+        <input type="text" id="nkNote" placeholder="Catatan (opsional)" style="flex:1;min-width:180px" />
+      </div>
+      <div class="row">
+        <button class="btn btn-p" id="btnCreate">+ Buat Key</button>
+      </div>
+      <div id="newKeyBox" class="hidden"><div class="muted" style="font-size:.82rem;margin:10px 0 4px">Simpan key ini — hanya ditampilkan SEKALI:</div><div class="newkey" id="newKey"></div></div>
+      <div id="createMsg" class="msg hidden"></div>
+    </div>
+
+    <div class="card">
+      <h2>Daftar API Key</h2>
+      <table class="table">
+        <thead><tr><th>Nama</th><th>Key (hash)</th><th>Dibuat</th><th>Pemakaian</th><th>Aksi</th></tr></thead>
+        <tbody id="keyRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>GenCap Admin · hanya untuk owner</footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+async function api(url, opts = {}) {
+  const r = await fetch('/api/admin' + url, opts);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
+  return d;
+}
+function keyShort(hash) { return hash ? hash.slice(0, 10) + '…' : '—'; }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+async function boot() {
+  try {
+    const s = await api('/session');
+    if (s.loggedIn) { showPanel(); } else { showLogin(); }
+  } catch (e) { showLogin(); }
+}
+function showLogin() { $('panel').classList.add('hidden'); $('loginCard').classList.remove('hidden'); $('btnLogout').style.display = 'none'; }
+function showPanel() {
+  $('loginCard').classList.add('hidden'); $('panel').classList.remove('hidden'); $('btnLogout').style.display = '';
+  refreshKeys();
+}
+
+async function refreshKeys() {
+  try {
+    const d = await api('/keys');
+    const rows = d.keys.map(k => `
+      <tr>
+        <td><b>${esc(k.name)}</b>${k.note ? '<div class="muted" style="font-size:.78rem">' + esc(k.note) + '</div>' : ''}</td>
+        <td><span class="key">${esc(keyShort(k.id))}</span><div class="muted" style="font-size:.72rem">${k.revoked ? '<span class="badge badge-off">dicabut</span>' : '<span class="badge badge-ok">aktif</span>'}</div></td>
+        <td class="muted" style="font-size:.8rem">${esc((k.created_at || '').slice(0, 10))}</td>
+        <td style="font-size:.85rem">${k.uses || 0}<div class="muted" style="font-size:.7rem">${k.last_used_at ? esc(k.last_used_at.slice(0,16).replace('T',' ')) : 'belum pernah'}</div></td>
+        <td>${k.revoked ? '' : `<button class="btn btn-g" style="padding:7px 12px;font-size:.8rem" onclick="revoke('${esc(k.id)}')">Cabut</button>`}</td>
+      </tr>`).join('');
+    $('keyRows').innerHTML = rows || '<tr><td colspan="5" class="muted">Belum ada key.</td></tr>';
+  } catch (e) { showMsg('createMsg', e.message, true); }
+}
+
+$('btnLogin').onclick = async () => {
+  const password = $('pass').value;
+  try { await api('/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password }) }); $('pass').value = ''; showPanel(); }
+  catch (e) { showMsg('loginMsg', e.message, true); }
+};
+$('btnLogout').onclick = async () => { try { await api('/logout', { method: 'POST' }); } catch (e) {} showLogin(); };
+$('btnCreate').onclick = async () => {
+  try {
+    const d = await api('/keys', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: $('nkName').value, note: $('nkNote').value }) });
+    $('newKey').textContent = d.key;
+    $('newKeyBox').classList.remove('hidden');
+    $('nkName').value = ''; $('nkNote').value = '';
+    showMsg('createMsg', 'Key berhasil dibuat.', false);
+    refreshKeys();
+  } catch (e) { showMsg('createMsg', e.message, true); }
+};
+
+window.revoke = async (id) => {
+  if (!confirm('Cabut API key ini?')) return;
+  try { await api('/keys/' + id + '/revoke', { method: 'POST' }); refreshKeys(); }
+  catch (e) { showMsg('createMsg', e.message, true); }
+};
+function showMsg(id, text, isErr) {
+  const el = $(id); el.classList.remove('hidden'); el.classList.toggle('msg-ok', !isErr); el.classList.toggle('msg-err', !!isErr);
+  el.textContent = text;
+  setTimeout(() => el.classList.add('hidden'), 5000);
+}
+boot();
+</script>
+</body>
+</html>
