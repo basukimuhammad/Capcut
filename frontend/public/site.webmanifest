@@ -1,0 +1,10 @@
+{
+  "name": "GenCap",
+  "short_name": "GenCap",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#0000ff",
+  "background_color": "#0000ff",
+  "display": "standalone"
+}
