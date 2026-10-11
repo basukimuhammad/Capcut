@@ -868,7 +868,8 @@ app.on(['POST', 'GET'], '/api/search-templates', async (c) => {
         console.error(`[remote] search "${query}" gagal, fallback API lama:`, eRemote.message.slice(0, 80));
         items = await capcutTemplateSearch(query, target);
       }
-    } catch (e) {
+     } catch (e) {
+      console.error('[search] fallback juga gagal:', e.message);
       return c.json({ error: 'pencarian gagal: ' + e.message }, 502);
     }
     storeSearch(query, items);
