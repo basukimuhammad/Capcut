@@ -1,0 +1,42 @@
+[
+  {
+    "id": "cbb55fe44344f6b6d140e783933664a7",
+    "key_hash": "84768364e0db2e93d3f2cbcd1389b41800191082a52dc334054c6be7afe57f8c",
+    "name": "curl-test",
+    "note": "uji",
+    "created_at": "2026-09-11T00:36:09.468Z",
+    "revoked": true,
+    "uses": 8,
+    "last_used_at": "2026-09-11T00:36:13.747Z"
+  },
+  {
+    "id": "de8d18eb4c226107b783aab26ecc6194",
+    "key_hash": "e7a57814ebce16877ffc6fc443ef671aba60d4399deb06ae96a351ef8296b278",
+    "name": "rate-test",
+    "note": "",
+    "created_at": "2026-09-11T00:53:36.162Z",
+    "revoked": true,
+    "uses": 3,
+    "last_used_at": "2026-09-11T00:53:36.325Z"
+  },
+  {
+    "id": "6dbe3c8f46e859684bb9f8abfff7c07e",
+    "key_hash": "f728fc252d477414e5c04d01b9307dc91d5946bac7f29bb5c1cf1fecdb10fc96",
+    "name": "Tanpa nama",
+    "note": "",
+    "created_at": "2026-09-12T10:23:59.284Z",
+    "revoked": false,
+    "uses": 1822,
+    "last_used_at": "2026-10-07T03:37:19.727Z"
+  },
+  {
+    "id": "9c45dd01c83be6a9b7cc1ae33c60f006",
+    "key_hash": "8e447ba3cd69628cebb1d4828a637acaf717fe3bb50b6c7f2c9aaba86e766da5",
+    "name": "Tanpa nama",
+    "note": "",
+    "created_at": "2026-09-26T00:07:32.694Z",
+    "revoked": false,
+    "uses": 810,
+    "last_used_at": "2026-10-04T08:55:11.785Z"
+  }
+]
